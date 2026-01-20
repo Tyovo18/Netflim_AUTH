@@ -35,10 +35,10 @@ PORT=4000
 NODE_ENV=development
 
 # Configuration MySQL
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=netflim_auth
-DB_USER=root
+DB_HOST=
+DB_PORT=
+DB_NAME=
+DB_USER=
 DB_PASSWORD=
 
 # JWT
