@@ -2,7 +2,6 @@ import { userRepository } from "../repositories/user.repository.js";
 import { hashPassword } from "../utils/password.js";
 
 export const userService = {
-  // CREATE -> A PROTEGER PAR UNE ROUTE ADMIN
   createUser: async ({ username, email, password }) => {
     const existingEmail = await userRepository.findByEmail(email);
     if (existingEmail) {
@@ -29,13 +28,11 @@ export const userService = {
     return user;
   },
 
-  // READ ALL
   getAllUsers: async () => {
     const users = await userRepository.findAll();
     return users;
   },
 
-  // READ ONE
   getUserById: async (id) => {
     const user = await userRepository.findById(id);
     if (!user) {
@@ -46,7 +43,6 @@ export const userService = {
     return user;
   },
 
-  // UPDATE
   updateUser: async (id, data) => {
     const user = await userRepository.findById(id);
     if (!user) {
@@ -84,7 +80,6 @@ export const userService = {
     return updated;
   },
 
-  // DELETE
   deleteUser: async (id) => {
     const user = await userRepository.findById(id);
     if (!user) {

@@ -20,8 +20,7 @@ const options = {
           type: 'object',
           properties: {
             id: {
-              type: 'integer',
-              example: 1,
+              type: 'string',
             },
             username: {
               type: 'string',
@@ -59,7 +58,7 @@ const options = {
             user: {
               type: 'object',
               properties: {
-                id: { type: 'integer' },
+                id: { type: 'string' },
                 email: { type: 'string' },
                 username: { type: 'string' },
               },

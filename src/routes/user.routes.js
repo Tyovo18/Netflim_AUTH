@@ -41,7 +41,7 @@ const router = Router();
  *               type: object
  *               properties:
  *                 id:
- *                   type: integer
+ *                   type: string
  *                 username:
  *                   type: string
  *                 email:
@@ -85,7 +85,7 @@ router.get('/', userController.getUsers);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: User ID
  *     responses:
  *       200:
@@ -110,7 +110,7 @@ router.get('/:id', userController.getUserById);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: User ID
  *     requestBody:
  *       required: true
@@ -153,7 +153,7 @@ router.put('/:id', userController.updateUser);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: User ID
  *     responses:
  *       200:
