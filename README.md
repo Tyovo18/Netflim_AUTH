@@ -49,6 +49,16 @@ JWT_REFRESH_EXPIRES_IN=7d
 
 # Service Auth Token
 AUTH_SERVICE_TOKEN=token-connexion
+
+# Configuration SMTP
+SMTP_HOST=
+SMTP_PORT=
+SMTP_USER=
+SMTP_PASS=
+
+# SMTP Service Token
+SMTP_SERVICE_TOKEN=mailtrap_token_12345
+
 ```
 
 ### 4. Créer la base de données MySQL
