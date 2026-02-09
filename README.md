@@ -99,9 +99,17 @@ http://localhost:4000/api-docs
 
 - **Express** : Framework web
 - **Sequelize** : ORM pour MySQL
-- **JWT** : Authentification par tokens
+- **MySQL2** : Driver MySQL utilisé par Sequelize
+- **JWT (jsonwebtoken)** : Authentification par tokens (access & refresh)
 - **Bcrypt** : Hash des mots de passe
-- **Joi** : Validation de données
-- **Swagger** : Documentation API
+- **Joi** : Validation des données
+- **Zod** : Validation et définition de schémas de données
+- **Swagger (swagger-jsdoc / swagger-ui-express)** : Documentation API
+- **Axios** : Communication avec les autres microservices
+- **Dotenv** : Gestion des variables d’environnement
+- **Cors** : Gestion des requêtes cross-origin
+- **Helmet** : Sécurisation des en-têtes HTTP
+- **Express-rate-limit** : Protection contre les attaques par force brute
+- **Nodemailer** : Envoi d’e-mails (confirmation, réinitialisation de mot de passe)
+- **Handlebars** : Templates pour les e-mails
 - **Nodemon** : Rechargement automatique en développement
-
