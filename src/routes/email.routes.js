@@ -90,5 +90,4 @@ router.post('/reset-password', mailController.sendResetPassword);
  */
 router.post('/alert-signin', mailController.sendAlertSignIn);
 
-
 export default router;

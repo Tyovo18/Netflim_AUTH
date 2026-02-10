@@ -1,40 +1,58 @@
-# Netflim_AUTH
+# Netflim_AUTH – Microservice d’authentification
 
-Microservice d'authentification pour la plateforme Netflim.
+## Table des matières
+1. [Vue d’ensemble](#vue-densemble)
+2. [Installation et configuration](#installation-et-configuration)
+3. [Architecture](#architecture)
+4. [Authentification](#authentification)
+5. [Endpoints résumé](#endpoints-résumé)
+6. [Modèles de données](#modèles-de-données)
+7. [Exemples d’utilisation](#exemples-dutilisation)
+8. [Codes HTTP](#codes-http)
+9. [Cas d’erreur courants](#cas-derreur-courants)
+10. [Bonnes pratiques](#bonnes-pratiques)
+11. [Support et contact](#support-et-contact)
 
-## Groupe : 
-* Clément BAS
-* Emi LIM
-* Clémentin LY
+---
 
-##  Prérequis
+## Vue d’ensemble
 
-- **Node.js** (v18 ou supérieur)
-- **npm** (v9 ou supérieur)
-- **MySQL** (v5.7 ou supérieur)
+**Netflim AUTH** est le microservice d’authentification pour la plateforme Netflim.  
+Il gère la création d’utilisateurs, l’authentification via JWT, et l’envoi d’e-mails (alert-login, alert-signin, reset-password).  
 
-##  Installation
+**Informations clés :**
+- **Version :** 1.0.0
+- **Type :** REST API (Express.js + Node.js + MySQL)
+- **Port par défaut :** 4000
+- **Documentation :** Swagger/OpenAPI 3.0
+- **Communication inter-service :** `x-service-token`
 
-### 1. Cloner le repository
+---
+
+## Installation et configuration
+
+### Prérequis
+- Node.js >= 18  
+- npm >= 9  
+- MySQL >= 5.7  
+- Git
+
+### Installation
 ```bash
 git clone https://github.com/Tyovo18/Netflim_AUTH.git
 cd Netflim_AUTH
-```
-
-### 2. Installer les dépendances
-```bash
 npm install
-```
+````
 
-### 3. Configurer les variables d'environnement
+### Variables d’environnement
 
-Créer un fichier .env à la racine du projet avec les variables suivantes :
+Créer `.env` à la racine :
 
 ```env
 PORT=4000
 NODE_ENV=development
 
-# Configuration MySQL
+# MySQL
 DB_HOST=
 DB_PORT=
 DB_NAME=
@@ -50,76 +68,213 @@ JWT_REFRESH_EXPIRES_IN=7d
 # Service Auth Token
 AUTH_SERVICE_TOKEN=token-connexion
 
-# Configuration SMTP
+# SMTP
 SMTP_HOST=
 SMTP_PORT=
 SMTP_USER=
 SMTP_PASS=
-
-# SMTP Service Token
 SMTP_SERVICE_TOKEN=mailtrap_token_12345
-
 ```
 
-### 4. Créer la base de données MySQL
-
-```bash
-mysql -u root -p
-```
+### Base de données
 
 ```sql
 CREATE DATABASE netflim_auth;
 ```
 
-#### Note :
+> Décommentez `await sequelize.sync({ alter: true });` dans `database.js` la première fois pour créer les tables.
 
-Décommenter <code style="color: green;">await sequelize.sync({ alter: true });</code> dans le fichier `database.js` la première fois afin de créer les tables de la bases de données.
+### Démarrage
 
-##  Lancement
-
-### Mode développement (avec nodemon)
 ```bash
+# Développement
 npm run dev
-```
 
-Le serveur redémarrera automatiquement à chaque modification de fichier.
-
-### Mode production
-```bash
+# Production
 npm start
 ```
 
-Le serveur démarrera sur http://localhost:4000
+API disponible à `http://localhost:4000`
+Swagger : `http://localhost:4000/api-docs`
 
-##  Documentation API
+---
 
-Une fois le serveur lancé, vous pouvez accéder à la documentation Swagger :
+## Architecture
 
-`
-http://localhost:4000/api-docs
-`
+### Structure du projet
 
-##  Endpoints principales
+```
+src/
+├─ config/        # DB, env, swagger
+├─ controllers/   # auth, user, email
+├─ middlewares/   # service-auth
+├─ models/        # user
+├─ repositories/  # user
+├─ routes/        # auth, user, email
+├─ services/      # auth, user, mailer
+├─ templates/     # emails
+├─ utils/         # jwt, axios, mailer, password, template-engine
+├─ validators/
+├─ app.js
+└─ server.js
+```
 
-- **Authentication** : /api/auth/
-- **Users** : /api/users/
-- **Documentation** : /api-docs
+### Architecture en couches
 
-##  Dépendances principales
+```
+Routes → Controllers → Services → Base de données / SMTP → Services externes
+```
 
-- **Express** : Framework web
-- **Sequelize** : ORM pour MySQL
-- **MySQL2** : Driver MySQL utilisé par Sequelize
-- **JWT (jsonwebtoken)** : Authentification par tokens (access & refresh)
-- **Bcrypt** : Hash des mots de passe
-- **Joi** : Validation des données
-- **Zod** : Validation et définition de schémas de données
-- **Swagger (swagger-jsdoc / swagger-ui-express)** : Documentation API
-- **Axios** : Communication avec les autres microservices
-- **Dotenv** : Gestion des variables d’environnement
-- **Cors** : Gestion des requêtes cross-origin
-- **Helmet** : Sécurisation des en-têtes HTTP
-- **Express-rate-limit** : Protection contre les attaques par force brute
-- **Nodemailer** : Envoi d’e-mails (confirmation, réinitialisation de mot de passe)
-- **Handlebars** : Templates pour les e-mails
-- **Nodemon** : Rechargement automatique en développement
+---
+
+## Authentification
+
+* **JWT Bearer Token** : pour routes protégées
+  Header : `Authorization: Bearer <JWT>`
+* **Service Token** : pour communication inter-service
+  Header : `x-service-token: <AUTH_SERVICE_TOKEN>`
+
+---
+
+## Endpoints résumé
+
+| Méthode | Endpoint                 | Description                     |
+| ------- | ------------------------ | ------------------------------- |
+| POST    | /auth/register           | Créer un nouvel utilisateur     |
+| POST    | /auth/login              | Connexion utilisateur           |
+| GET     | /auth/verify             | Vérifier JWT                    |
+| POST    | /users                   | Créer un utilisateur (Admin)    |
+| GET     | /users                   | Récupérer tous les utilisateurs |
+| GET     | /users/{id}              | Récupérer un utilisateur        |
+| PUT     | /users/{id}              | Mettre à jour un utilisateur    |
+| DELETE  | /users/{id}              | Supprimer un utilisateur        |
+| POST    | /api/mail/alert-login    | Envoyer alerte login            |
+| POST    | /api/mail/alert-signin   | Envoyer mail création compte    |
+| POST    | /api/mail/reset-password | Envoyer mail réinitialisation   |
+
+---
+
+## Modèles de données
+
+### User
+
+```json
+{
+  "id": "uuid",
+  "username": "emi_lim",
+  "email": "emi@gmail.com",
+  "createdAt": "2026-02-10T12:00:00Z"
+}
+```
+
+### AuthResponse
+
+```json
+{
+  "user": { "id": "uuid", "username": "emi_lim", "email": "emi@gmail.com" },
+  "accessToken": "jwt_token_here"
+}
+```
+
+### VerifyResponse
+
+```json
+{
+  "valid": true,
+  "user": { "id": "uuid", "username": "emi_lim", "email": "emi@gmail.com" }
+}
+```
+
+### ErrorResponse
+
+```json
+{ "message": "Token invalide ou mot de passe incorrect" }
+```
+
+---
+
+## Exemples d’utilisation
+
+**Créer un utilisateur (Admin)**
+
+```bash
+curl -X POST http://localhost:4000/users \
+  -H "Authorization: Bearer YOUR_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{"username":"emi_lim","email":"emi@gmail.com","password":"SecurePass456"}'
+```
+
+**Connexion utilisateur**
+
+```bash
+curl -X POST http://localhost:4000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"identifier":"emi@gmail.com","password":"MySecurePass123"}'
+```
+
+**Envoyer alerte login**
+
+```bash
+curl -X POST http://localhost:4000/api/mail/alert-login \
+  -H "Content-Type: application/json" \
+  -d '{"to":"emi@gmail.com"}'
+```
+
+**Vérifier JWT**
+
+```bash
+curl -X GET http://localhost:4000/auth/verify \
+  -H "Authorization: Bearer YOUR_JWT" \
+  -H "x-service-token: token-connexion"
+```
+
+---
+
+## Codes HTTP
+
+| Code | Sens         | Exemple                                |
+| ---- | ------------ | -------------------------------------- |
+| 200  | OK           | Requête réussie                        |
+| 201  | Created      | Ressource créée                        |
+| 400  | Bad Request  | Données invalides                      |
+| 401  | Unauthorized | Token invalide ou manquant             |
+| 403  | Forbidden    | Service token invalide                 |
+| 404  | Not Found    | Ressource inexistante                  |
+| 409  | Conflict     | Conflit (email/username déjà existant) |
+| 500  | Server Error | Erreur serveur                         |
+
+---
+
+## Cas d’erreur courants
+
+**401 – Token invalide**
+
+```json
+{ "message": "Token invalide ou mot de passe incorrect" }
+```
+
+**404 – Utilisateur non trouvé**
+
+```json
+{ "message": "Utilisateur introuvable" }
+```
+
+---
+
+## Bonnes pratiques
+
+1. Toujours utiliser JWT pour routes protégées
+2. Valider les données côté client
+3. Ne jamais exposer secrets (`JWT_SECRET`, `SMTP_PASS`)
+4. Respecter formats email et mot de passe
+5. Garder services modulaires (auth, users, mail)
+
+---
+
+## Support et contact
+
+* GitHub : [https://github.com/Tyovo18/Netflim_AUTH](https://github.com/Tyovo18/Netflim_AUTH)
+* Issues : [https://github.com/Tyovo18/Netflim_AUTH/issues](https://github.com/Tyovo18/Netflim_AUTH/issues)
+* Swagger : `http://localhost:4000/api-docs`
+
+

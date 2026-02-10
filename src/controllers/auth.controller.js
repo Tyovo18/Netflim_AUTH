@@ -16,6 +16,7 @@ const loginSchema = Joi.object({
 });
 
 export const authController = {
+  //POST /auth/register
   register: async (req, res, next) => {
     try {
       const { error, value } = registerSchema.validate(req.body);
@@ -40,6 +41,7 @@ export const authController = {
     }
   },
 
+  //POST /auth/login
   login: async (req, res, next) => {
     try {
       const { error, value } = loginSchema.validate(req.body);
@@ -63,6 +65,8 @@ export const authController = {
       next(err);
     }
   },
+
+  //GET /auth/verify 
   verify: (req, res) => {
     try {
       const authHeader = req.headers.authorization || '';
