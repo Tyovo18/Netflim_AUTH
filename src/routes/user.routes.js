@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { userController } from '../controllers/user.controllers.js';
+import { userController } from '../controllers/user.controllers.js'; // attention au nom du fichier
+import { authenticate } from '../middlewares/auth.middleware.js';
+import { validate } from '../middlewares/validate.middleware.js';
+import { createUserSchema, updateUserSchema } from '../validators/user.validator.js';
+
 
 const router = Router();
 
@@ -9,6 +13,8 @@ const router = Router();
  *   post:
  *     summary: Create a new user (Admin only)
  *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -54,7 +60,7 @@ const router = Router();
  *       409:
  *         description: Email or username already exists
  */
-router.post('/', userController.createUser);
+router.post('/', authenticate, validate(createUserSchema), userController.createUser);
 
 /**
  * @swagger
@@ -62,6 +68,8 @@ router.post('/', userController.createUser);
  *   get:
  *     summary: Get all users
  *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
  *     responses:
  *       200:
  *         description: List of all users
@@ -72,7 +80,7 @@ router.post('/', userController.createUser);
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get('/', userController.getUsers);
+router.get('/', authenticate, userController.getUsers);
 
 /**
  * @swagger
@@ -80,6 +88,8 @@ router.get('/', userController.getUsers);
  *   get:
  *     summary: Get user by ID
  *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -97,7 +107,7 @@ router.get('/', userController.getUsers);
  *       404:
  *         description: User not found
  */
-router.get('/:id', userController.getUserById);
+router.get('/:id', authenticate, userController.getUserById);
 
 /**
  * @swagger
@@ -105,6 +115,8 @@ router.get('/:id', userController.getUserById);
  *   put:
  *     summary: Update user
  *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -140,7 +152,7 @@ router.get('/:id', userController.getUserById);
  *       409:
  *         description: Email or username already exists
  */
-router.put('/:id', userController.updateUser);
+router.put('/:id', authenticate, validate(updateUserSchema), userController.updateUser);
 
 /**
  * @swagger
@@ -148,6 +160,8 @@ router.put('/:id', userController.updateUser);
  *   delete:
  *     summary: Delete user
  *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -161,6 +175,6 @@ router.put('/:id', userController.updateUser);
  *       404:
  *         description: User not found
  */
-router.delete('/:id', userController.deleteUser);
+router.delete('/:id', authenticate, userController.deleteUser);
 
 export default router;

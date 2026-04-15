@@ -69,11 +69,7 @@ JWT_REFRESH_EXPIRES_IN=7d
 AUTH_SERVICE_TOKEN=token-connexion
 
 # SMTP
-SMTP_HOST=
-SMTP_PORT=
-SMTP_USER=
-SMTP_PASS=
-SMTP_SERVICE_TOKEN=mailtrap_token_12345
+SMTP_URL=http://localhost:5000/api/mail
 ```
 
 ### Base de données

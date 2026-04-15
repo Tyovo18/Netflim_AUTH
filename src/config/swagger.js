@@ -6,7 +6,7 @@ const options = {
     info: {
       title: 'Netflim Auth API',
       version: '1.0.0',
-      description: 'Microservice d\'authentification pour la plateforme Netflim',
+      description: 'Authentication microservice for the Netflim platform',
     },
     servers: [
       {
@@ -19,43 +19,30 @@ const options = {
         User: {
           type: 'object',
           properties: {
-            id: {
-              type: 'string',
-            },
-            username: {
-              type: 'string',
-              example: 'emi_lim',
-            },
-            email: {
-              type: 'string',
-              example: 'emi@gmail.com',
-            },
-            createdAt: {
-              type: 'string',
-              format: 'date-time',
-            },
+            id: { type: 'string', example: '123e4567-e89b-12d3-a456-426614174000' },
+            username: { type: 'string', example: 'emi_lim' },
+            email: { type: 'string', example: 'emi@gmail.com' },
+            createdAt: { type: 'string', format: 'date-time' },
           },
         },
+        
         AuthResponse: {
           type: 'object',
           properties: {
-            user: {
-              $ref: '#/components/schemas/User',
-            },
-            accessToken: {
-              type: 'string',
+            user: { $ref: '#/components/schemas/User' },
+            accessToken: { 
+              type: 'string', 
               description: 'JWT access token',
-              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
             },
           },
         },
+
         VerifyResponse: {
           type: 'object',
           properties: {
-            valid: {
-              type: 'boolean',
-            },
-            user: {
+            valid: { type: 'boolean', example: true },
+            user: { 
               type: 'object',
               properties: {
                 id: { type: 'string' },
@@ -65,11 +52,15 @@ const options = {
             },
           },
         },
+
         Error: {
           type: 'object',
           properties: {
-            message: {
-              type: 'string',
+            message: { type: 'string' },
+            details: { 
+              type: 'array',
+              items: { type: 'string' },
+              description: 'Validation error details (optional)'
             },
           },
         },
