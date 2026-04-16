@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const PORT = process.env.MAIL_SERVICE_PORT || 4005;
+
 export const mailService = {
     sendAlertSignIn: async ({ to, username }) => {
     if (!to || !username) {
@@ -15,7 +17,7 @@ export const mailService = {
         console.log('Data:', data);
 
         const res = await axios.post(
-            'http://localhost:4005/api/mail/alert-signin',
+            `http://localhost:${PORT}/api/mail/alert-signin`,
             data,
             { headers: { 'Content-Type': 'application/json' } }
         );
@@ -35,7 +37,7 @@ export const mailService = {
     console.log('[mailService] Envoi AlertLogin:', { to, username });
 
     try {
-      const res = await axios.post('http://localhost:5000/api/mail/alert-login', {
+      const res = await axios.post(`http://localhost:${PORT}/api/mail/alert-login`, {
         to,
         username,
       });
@@ -54,7 +56,7 @@ export const mailService = {
     console.log('[mailService] Envoi ResetPassword:', { to, username, resetLink });
 
     try {
-      const res = await axios.post('http://localhost:5000/api/mail/reset-password', {
+      const res = await axios.post(`http://localhost:${PORT}/api/mail/reset-password`, {
         to,
         username,
         resetLink,
