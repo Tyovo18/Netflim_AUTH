@@ -23,7 +23,7 @@ Il gère la création d’utilisateurs, l’authentification via JWT, et l’env
 **Informations clés :**
 - **Version :** 1.0.0
 - **Type :** REST API (Express.js + Node.js + MySQL)
-- **Port par défaut :** 4000
+- **Port par défaut :** 3000
 - **Documentation :** Swagger/OpenAPI 3.0
 - **Communication inter-service :** `x-service-token`
 
@@ -90,8 +90,8 @@ npm run dev
 npm start
 ```
 
-API disponible à `http://localhost:4000`
-Swagger : `http://localhost:4000/api-docs`
+API disponible à `http://localhost:3000`
+Swagger : `http://localhost:3000/api-docs`
 
 ---
 
@@ -267,10 +267,16 @@ curl -X GET http://localhost:4000/auth/verify \
 
 ---
 
+## Notes importantes
+
+- Le `JWT_SECRET` doit être **identique** dans AUTH, DATA, FILE et SMTP
+- Les emails sont envoyés automatiquement au register et au login via le service SMTP (port 4005)
+- Les routes DELETE retournent un `200` avec un message de confirmation
+
 ## Support et contact
 
 * GitHub : [https://github.com/Tyovo18/Netflim_AUTH](https://github.com/Tyovo18/Netflim_AUTH)
 * Issues : [https://github.com/Tyovo18/Netflim_AUTH/issues](https://github.com/Tyovo18/Netflim_AUTH/issues)
-* Swagger : `http://localhost:4000/api-docs`
+* Swagger : `http://localhost:3000/api-docs`
 
 

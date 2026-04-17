@@ -81,7 +81,7 @@ export const userController = {
 
       await userService.deleteUser(id);
 
-      return res.status(204).send(); // pas de contenu
+      return res.status(200).json({ message: 'Utilisateur supprimé avec succès' });
     } catch (err) {
       next(err);
     }

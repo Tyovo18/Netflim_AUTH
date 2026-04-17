@@ -1,6 +1,7 @@
 import { userRepository } from "../repositories/user.repository.js";
 import { hashPassword, comparePassword } from "../utils/password.js";
 import { generateAccessToken } from "../utils/jwt.js";
+import { mailService } from "./email.service.js";
 
 export const authService = {
   register: async ({ username, email, password }) => {
@@ -36,6 +37,8 @@ export const authService = {
 
     const accessToken = generateAccessToken(payload);
 
+    mailService.sendAlertSignIn({ to: user.email, username: user.username }).catch(() => {});
+
     return { user, accessToken };
   },
 
@@ -67,6 +70,8 @@ export const authService = {
     };
 
     const accessToken = generateAccessToken(payload);
+
+    mailService.sendAlertLogin({ to: user.email, username: user.username }).catch(() => {});
 
     return { user, accessToken };
   },
